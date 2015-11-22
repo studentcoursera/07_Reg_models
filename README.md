@@ -1,13 +1,13 @@
-# 07_Reg_models
+# Variable selection
 
-## Snippet: Variable selection - regression models  
+# Snippet: Variable selection - regression models  
 1. Best Subset Selection, Forward and Backward Stepwise Selection: The model with the lowest BIC (-47), **[ref: "Fig1: BIC: Best mode"]**, is the 3-variables model: **wt, qsec & am**. When compared best subset, forward and backwards stepwise; 1,2,4,11 and 12 variables model are same for the 3 models. As 1 & 2 variables model, do not have 'am' component, eliminate them. Next is 4-variable model, it has 'am' component. The 4-variables are: **cyl, hp, wt & am**.
 2. Choosing Among Models Using the Validation Set Approach and Cross-Validation: As per validation approach, 5-variables model: **cyl, hp, wt, vs & am**. As per cross-validation **[ref: "Fig2: Mean CV errors"]**, 4-variables model: **cyl, hp, wt & am1**.
 3. Ridge Regression and The Lasso: Ridge **[ref: "Fig3: Ridge: CV error"]**: none of the coefficients are zero, so does not perform variable selection! Lasso **[ref: "Fig4: Lasso" & "Fig5: Lasso: CV error"]**: With lambda chosen by cross-validation contains only 7 variables, after eliminating all the zeroes coefficient variables: **cyl, hp, drat, wt, vs & am**
 4. Principal Components Regression  **[ref: "Fig6: PCR CV Scores: full data"]** and Partial Least Squares  where also performed. Noticed PCR test set MSE was 6.17, competitive to ridge (4.71) regression and better than lasso (8.41). PCR . PLS test MSE was 6.45, comparable but higher than PCR and ridge, lesser than lasso. By cross validation, PCR identified 2 components where as PLS 3 components. The percentage of variance in 'mpg' that the 2-component PLS fit explains, 85.58%, is almost as much as that explained using the final 3-component model PCR fit, 85.21%.
 5. **Conclusion:** I choose "all the 3 models selection", the 4-variables: **cyl, hp, wt & am**. One good reason the (empirical mean) intercept was 34.35, best of all the options. Also, lesser variables, variable 'am' present in this. Also, I personally would choose hp, wt and cyl (apart from qsec, which I eliminate after this process) along with am and mpg.
 
-## Details of variable selection:
+# Details of variable selection:
 ====================================================
 1a. subset
 ====================================================
