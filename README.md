@@ -43,19 +43,18 @@ points (mn_bic, reg.summary$bic [mn_bic], col =" red",cex =2, pch =20)
 
 plot(regfit.full, scale = "adjr2")
 plot(regfit.full, scale = "bic")
-#--
+````
 
-# the model with the lowest BIC (-47) is the
-# 3-variable model that contains only wt, qsec and am1.
+the model with the lowest BIC (-47) is the
+3-variable model that contains only wt, qsec and am1.
 
-#Use the coef() function, to see the coefficient estimates associated with this model.
-```
-
+Use the coef() function, to see the coefficient estimates associated with this model.
 As this has 'am' variable and very less variable, this looks like a good choice.
 
 ====================================================
 1b. Forward and backward stepwise selection
 ====================================================
+
 ```{r}
 #--
 regfit.fwd <- regsubsets(mpg ~ ., data=data, nvmax = max_col, method="forward")
@@ -79,18 +78,6 @@ fields_match <- function(regfit1, regfit2, tst=TRUE) {
 fields_match(regfit.bwd, regfit.fwd)
 fields_match(regfit.bwd, regfit.full)
 fields_match(regfit.full, regfit.fwd)
-
-#--
-> fields_match(regfit.bwd, regfit.fwd)
-   1    2    3    4   11   12
-TRUE TRUE TRUE TRUE TRUE TRUE
-> fields_match(regfit.bwd, regfit.full)
-   1    2    4    8    9   10   11   12
-TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
-> fields_match(regfit.full, regfit.fwd)
-   1    2    4    5    6   11   12
-TRUE TRUE TRUE TRUE TRUE TRUE TRUE
-#--
 ```
 
 1,2,4,11,12 variables are all same in all the 3.
@@ -129,17 +116,16 @@ Approach and Cross-Validation
 1c.i. Validation set
 ====================================================
 
-# We just saw that it is possible to choose among a set of models
-# of different sizes using Cp, BIC, and adjusted R2.
+We just saw that it is possible to choose among a set of models
+of different sizes using Cp, BIC, and adjusted R2.
 
-# We will now consider how to do this
-# using the validation set and cross-validation approaches
+We will now consider how to do this
+using the validation set and cross-validation approaches
 
-# Split data into training and test, for this.
+Split data into training and test, for this.
 
-#--Choosing best seed, as per my logic
-## From this, seed 5, will be best. The overall validation error will be less.
-#--
+Choosing best seed, as per my logic
+From this, seed 5, will be best. The overall validation error will be less.
 
 ```{r}
 library(caret) ## for createDataPartition
@@ -167,19 +153,19 @@ min(val.errors)
 which.min(val.errors)
 ```
 
-## As per this, least error is with 10 variables.
-## but an error of 5% is acceptable and lesser number of variables is preferable,
-## thus, we will choose, 5 variables - which is around 4.99 error.
+As per this, least error is with 10 variables.
+but an error of 5% is acceptable and lesser number of variables is preferable,
+thus, we will choose, 5 variables - which is around 4.99 error.
 
 ```{r}
 coef(regfit.best, 5)
 ```
 
-# As I need, 'am' as a predictor,
-# Lesser the # of variable, it is better, I go with 5 variables.
+As I need, 'am' as a predictor,
+Lesser the # of variable, it is better, I go with 5 variables.
 
-##---So, as per validation set, 5-variable is much preferred
-## Finally, run the best subset selection on the full data set, not training now.
+So, as per validation set, 5-variable is much preferred
+Finally, run the best subset selection on the full data set, not training now.
 
 ```{r}
 regfit.best <- regsubsets(mpg ~ ., data=data, nvmax = max_col)
@@ -194,7 +180,6 @@ predict.regsubsets <- function(object, newdata, id, ...)
     xvars <- names(coefi)
     mat[,xvars]%*%coefi
 }
-##--
 ```
 
 So, as per validation approach, 5-variables: cyl6, hp, wt, vs1, am1 is chosen.
@@ -206,10 +191,10 @@ least variables possible.
 ====================================================
 1c.ii. Cross-validation
 ====================================================
-## continuation from validation approach (prev calcs)
+continuation from validation approach (prev calcs)
 
-## First, create a vector that allocates each observation to one of k = 5 folds,
-## and create a matrix in which we will store the results.
+First, create a vector that allocates each observation to one of k = 5 folds,
+and create a matrix in which we will store the results.
 
 ```{r}
 k <- 10
@@ -226,7 +211,6 @@ for(j in 1:k){
        cv.errors[j,i] <- mean((data$mpg[folds==j]-pred)^2)
     }
 }
-#--
 
 mean.cv.errors <- apply(cv.errors, 2,mean)
 #par(mfrow =c(1,1))
@@ -323,21 +307,22 @@ pcr.fit1 <- pcr(mpg ~ ., data=data, scale=TRUE, validation="CV")
 summary(pcr.fit)
 ```
 
-## pcr() reports the root mean squared error (RMSEP); in order to obtain
-## the usual MSE, we must square this quantity;
-## example: 12 comps: 3.434 (RMSEP) -> 3.434^2 = 11.792 (MSE)
+pcr() reports the root mean squared error (RMSEP); in order to obtain
+the usual MSE, we must square this quantity;
+example: 12 comps: 3.434 (RMSEP) -> 3.434^2 = 11.792 (MSE)
 
-##--
-## One can also plot the cross-validation scores using the validationplot()
-## validation function.
-## Using val.type="MSEP" will cause the cross-validation MSE to be plot()
-## plotted.
+One can also plot the cross-validation scores using the validationplot()
+validation function.
+Using val.type="MSEP" will cause the cross-validation MSE to be plot()
+plotted.
 
+```{r}
 validationplot(pcr.fit1, val.type="MSEP")
+````
 
-# lowest cross-validation error occurs when M = 4 component are used.
+lowest cross-validation error occurs when M = 4 component are used.
+perform PCR on the training data and evaluate its test set performance
 
-## perform PCR on the training data and evaluate its test set performance
 ```{r}
 set.seed(5)
 pcr.fit <- pcr(mpg~., data=data, subset=train, scale=TRUE, validation = "CV")
@@ -345,7 +330,7 @@ validationplot(pcr.fit,val.type="MSEP")
 
 # lowest cross-validation error occurs when M = 3 component are used.
 
-## We compute the 'test' MSE as follows.
+# We compute the 'test' MSE as follows.
 pcr.pred=predict(pcr.fit, x[test,], ncomp=3)
 mean((pcr.pred -y.test)^2)
 ```
@@ -355,8 +340,8 @@ but far better than the lasso(8.41). However, as a result of the way PCR is impl
 the final model is more difficult to interpret because it does not perform
 any kind of variable selection or even directly produce coefficient estimates.
 
-## Finally, we fit PCR on the full data set, using M = 3, the number of
-## components identified by cross-validation.
+Finally, we fit PCR on the full data set, using M = 3, the number of
+components identified by cross-validation.
 ```{r}
 pcr.fit <- pcr(y~x,scale=TRUE, ncomp=3)
 summary(pcr.fit)
@@ -374,19 +359,19 @@ pls.fit <- plsr(mpg ~ ., data=data, subset=train, scale=TRUE, validation="CV")
 summary(pls.fit)
 ```
 
-## The lowest cross-validation error occurs when only M = 2 partial least
-## squares directions are used. We now evaluate the corresponding test set
-## MSE.
+The lowest cross-validation error occurs when only M = 2 partial least
+squares directions are used. We now evaluate the corresponding test set
+MSE.
 ```{r}
 pls.pred <- predict(pls.fit, x[test,], ncomp=2)
 mean((pls.pred - y.test)^2)
 ```
 
-## The test MSE is comparable to, but higher than, the test MSE than PCR(6.17) and ridge(4.71)
-## with the bestlam as the lambda. But, lesser than lasso(8.41).
+The test MSE is comparable to, but higher than, the test MSE than PCR(6.17) and ridge(4.71)
+with the bestlam as the lambda. But, lesser than lasso(8.41).
 
-## Finally, we perform PLS using the full data set, using M = 2, the number
-## of components identified by cross-validation.
+Finally, we perform PLS using the full data set, using M = 2, the number
+of components identified by cross-validation.
 
 ```{r}
 pls.fit <- plsr(mpg~., data=data, scale=TRUE, ncomp=2)
